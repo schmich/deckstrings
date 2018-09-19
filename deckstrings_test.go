@@ -1,8 +1,11 @@
-package deckstrings
+package deckstrings_test
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/schmich/deckstrings"
+	. "github.com/schmich/deckstrings"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,6 +18,10 @@ func TestEncodeDecodeSimplest(t *testing.T) {
 	}
 
 	encoded, err := Encode(deck)
+	assert.Nil(t, err)
+	assert.Equal(t, deckstring, encoded, "deckstrings should be equal")
+
+	encoded, err = Encode(Deck{})
 	assert.Nil(t, err)
 	assert.Equal(t, deckstring, encoded, "deckstrings should be equal")
 
@@ -157,6 +164,7 @@ func TestDeckstrings(t *testing.T) {
 		"AAECAaoICO0Fsgb7DJPBAqvnAvPnAuDqAu/3AgvuAYEE9QT+BcfBAsnHApvLArbNAp7wAqbwAu/xAgA=",
 		"AAECAf0EBE1x7/EC74ADDbsClQOrBLQE5gSWBewFwcECj9MC++wC6vYClf8Cuf8CAA==",
 		"AAECAZICCPIF+Az5DK6rAuC7ApS9AsnHApnTAgtAX/4BxAbkCLS7Asu8As+8At2+AqDNAofOAgA=",
+		"AAECAZ/HAgwJlwK0A+UE0wrXCr7IAubMAsLOAoL3AqCAA42CAwmhBNHBAtjBAuXMArTOAvDPAujQAuPpAp/rAgA=",
 	}
 
 	for _, deckstring := range deckstrings {
@@ -168,4 +176,46 @@ func TestDeckstrings(t *testing.T) {
 
 		assert.Equal(t, deckstring, encoded, "deckstrings should be equal")
 	}
+}
+
+func ExampleEncode_empty() {
+	deckstring, err := deckstrings.Encode(Deck{})
+	fmt.Println(deckstring, err)
+	// Output:
+	// AAEAAAAAAA== <nil>
+}
+
+func ExampleEncode() {
+	cards := [][2]uint64{
+		{9, 1}, {279, 1}, {436, 1}, {545, 2}, {613, 1},
+		{1363, 1}, {1367, 1}, {41169, 2}, {41176, 2},
+		{42046, 1}, {42597, 2}, {42598, 1}, {42804, 2},
+		{42818, 1}, {42992, 2}, {43112, 2}, {46307, 2},
+		{46495, 2}, {48002, 1}, {49184, 1}, {49421, 1},
+	}
+	deck := Deck{
+		Format: deckstrings.FormatStandard, // Standard
+		Heroes: []uint64{41887},            // Tyrande Whisperwind
+		Cards:  cards,                      // Cards in deck as (DBF ID, count) pairs
+	}
+	deckstring, err := deckstrings.Encode(deck)
+	fmt.Println(deckstring, err)
+	// Output:
+	// AAECAZ/HAgwJlwK0A+UE0wrXCr7IAubMAsLOAoL3AqCAA42CAwmhBNHBAtjBAuXMArTOAvDPAujQAuPpAp/rAgA= <nil>
+}
+
+func ExampleDecode_empty() {
+	deckstring := "AAEAAAAAAA=="
+	deck, err := deckstrings.Decode(deckstring)
+	fmt.Printf("%+v %v", deck, err)
+	// Output:
+	// {Format:0 Heroes:[] Cards:[]} <nil>
+}
+
+func ExampleDecode() {
+	deckstring := "AAECAZICCPIF+Az5DK6rAuC7ApS9AsnHApnTAgtAX/4BxAbkCLS7Asu8As+8At2+AqDNAofOAgA="
+	deck, err := deckstrings.Decode(deckstring)
+	fmt.Printf("%+v %v", deck, err)
+	// Output:
+	// {Format:2 Heroes:[274] Cards:[[64 2] [95 2] [254 2] [754 1] [836 2] [1124 2] [1656 1] [1657 1] [38318 1] [40372 2] [40416 1] [40523 2] [40527 2] [40596 1] [40797 2] [41929 1] [42656 2] [42759 2] [43417 1]]} <nil>
 }

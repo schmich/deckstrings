@@ -67,6 +67,9 @@ type Deck struct {
 
 // Decode a deckstring into a Hearthstone deck.
 //
+// Decodings are canonical: the resulting deck's Heroes and Cards fields are
+// ordered by DBF ID ascending.
+//
 // Returns an error if the string is not base64 encoded, if the deckstring version
 // is not supported, or if the general format is invalid. See the Deck type for
 // details about possible values and ranges for format, heroes, and cards.
@@ -146,6 +149,9 @@ func Decode(deckstring string) (deck Deck, err error) {
 }
 
 // Encode a Hearthstone deck into a deckstring using base64.StdEncoding.
+//
+// Encodings are canonical: the deck's Heroes and Cards fields are encoded
+// in ascending DBF ID order.
 //
 // Returns an error if any card count is 0. See the Deck type for details
 // about possible values and ranges for format, heroes, and cards.
