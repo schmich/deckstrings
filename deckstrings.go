@@ -1,6 +1,6 @@
 // This package encodes and decodes Hearthstone deckstrings.
 //
-// Hearthstone deckstrings encode a Hearthstone deck in a compact string format.
+// A Hearthstone deckstring encodes a Hearthstone deck in a compact string format.
 // The IDs used in deckstrings and in this library are Hearthstone DBF IDs
 // which are unique identifiers for Hearthstone entities like cards and heroes.
 //
