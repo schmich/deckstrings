@@ -1,3 +1,12 @@
+// This package encodes and decodes Hearthstone deckstrings.
+//
+// Hearthstone deckstrings encode a Hearthstone deck in a compact string format.
+// The IDs used in deckstrings and in this library are Hearthstone DBF IDs
+// which are unique identifiers for Hearthstone entities like cards and heroes.
+//
+// For additional entity metadata (e.g. hero class, card cost, card name), DBF IDs
+// can be used in conjunction with the HearthstoneJSON database. See
+// https://hearthstonejson.com/ for details.
 package deckstrings
 
 import (
@@ -11,8 +20,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+// The deckstring version supported by this package. Decoding a deckstring
+// with a newer version is not supported. All deckstrings encoded by this
+// package include this version.
 const Version = 1
 
+// The game format for which the deck was built. Wild and Standard are the current
+// Hearthstone game formats.
 type Format uint64
 
 const (
@@ -20,13 +34,43 @@ const (
 	FormatStandard Format = 2
 )
 
+// Deck represents a Hearthstone deck with its associated game format, hero,
+// and card inventory.
+//
+// The Format field will typically be FormatWild or FormatStandard. Since Format
+// is just a type alias for uint64, however, any uint64 value can be encoded to
+// or decoded from a deckstring.
+//
+// The Heroes field is an array of hero DBF IDs for whom this deck was built.
+// While multiple heroes (or no heroes) can be associated with a deck, Hearthstone
+// does not currently support such a concept, so this will typically have just a
+// single value.
+//
+// The Heroes field refers to specific characters (e.g. Malfurion or Lunara), not the
+// general class (e.g. Druid). You can use metadata from HearthstoneJSON to map
+// from the individual hero to the deck's class.
+//
+// The Cards field is an inventory of the cards present in the deck. It's an array
+// of uint64 pairs with the first element being the card's unique DBF ID and the
+// second element being the count of that card in the deck (typically 1 or 2). A
+// count of 0 is invalid. Counts greater than 2 are valid but are typically not
+// seen in Hearthstone decks. The count of cards will typically sum to 30, but a
+// deckstring can encode an arbitrary number of cards.
+//
+// See HearthstoneJSON for hero and card metadata using DBF IDs:
+// https://hearthstonejson.com/
 type Deck struct {
 	Format Format
 	Heroes []uint64
 	Cards  [][2]uint64
 }
 
-func Decode(deckstring string) (_ Deck, err error) {
+// Decode a deckstring into a Hearthstone deck.
+//
+// Returns an error if the string is not base64 encoded, if the deckstring version
+// is not supported, or if the general format is invalid. See the Deck type for
+// details about possible values and ranges for format, heroes, and cards.
+func Decode(deckstring string) (deck Deck, err error) {
 	defer func() {
 		if err != nil {
 			err = errors.Wrap(err, "deckstring decode")
@@ -101,7 +145,11 @@ func Decode(deckstring string) (_ Deck, err error) {
 	}, nil
 }
 
-func Encode(deck Deck) (_ string, err error) {
+// Encode a Hearthstone deck into a deckstring using base64.StdEncoding.
+//
+// Returns an error if any card count is 0. See the Deck type for details
+// about possible values and ranges for format, heroes, and cards.
+func Encode(deck Deck) (deckstring string, err error) {
 	defer func() {
 		if err != nil {
 			err = errors.Wrap(err, "deckstring encode")
