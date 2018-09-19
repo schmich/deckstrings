@@ -2,7 +2,7 @@ package deckstrings
 
 import (
 	"encoding/binary"
-  "io"
+	"io"
 )
 
 type varintReader struct {
