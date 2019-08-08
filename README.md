@@ -15,8 +15,7 @@ import "github.com/schmich/deckstrings"
 A Hearthstone deckstring encodes a Hearthstone deck in a compact string format. The IDs used in deckstrings
 and in this library are Hearthstone DBF IDs which are unique identifiers for Hearthstone entities like cards and heroes.
 
-For additional entity metadata (e.g. hero class, card cost, card name), DBF IDs can be used in conjunction with the
-[HearthstoneJSON](https://hearthstonejson.com) database.
+For additional entity metadata (e.g. hero class, card cost, card name), DBF IDs can be used in conjunction with the [official Hearthstone API](https://develop.battle.net/documentation/api-reference/hearthstone-game-data-api) or [HearthstoneJSON](https://hearthstonejson.com) database.
 
 See the [deckstrings.Deck](https://godoc.org/github.com/schmich/deckstrings#Deck) type for details on how a
 Hearthstone deck is represented.
