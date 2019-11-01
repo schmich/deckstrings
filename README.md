@@ -1,3 +1,7 @@
+# Archival Notice
+
+**Due directly to the decisions and actions of Blizzard Entertainment, Inc., I will no longer be maintaining this project. The community is free to fork and continue it, but I do not wish to be involved.**
+
 # Hearthstone Deckstrings
 
 Go library for encoding and decoding [Hearthstone deckstrings](https://hearthsim.info/docs/deckstrings/). See [documentation](https://godoc.org/github.com/schmich/deckstrings) for help.
